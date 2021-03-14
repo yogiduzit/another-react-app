@@ -1,16 +1,22 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory, useParams } from 'react-router-dom';
 
-const AddToonForm = () => {
+const UpdateToonForm = () => {
+  const { id } = useParams();
+  const history = useHistory();
+
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [occupation, setOccupation] = useState('');
   const [gender, setGender] = useState('');
   const [pictureUrl, setPictureUrl] = useState('');
+  const [pictureUrls, setPictureUrls] = useState([]);
 
-  const addToon = async () => {
-    const result = await fetch(`https://api4all.azurewebsites.net/api/people/`, {
-      method: 'post',
+  const updateToon = async () => {
+    const res = await fetch(`https://api4all.azurewebsites.net/api/people/${id}`, {
+      method: 'put',
       body: JSON.stringify({
+        id,
         firstName,
         lastName,
         occupation,
@@ -18,16 +24,41 @@ const AddToonForm = () => {
         pictureUrl
       }),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
     });
-    setFirstName("")
-    setLastName("")
-    setOccupation("")
-    setGender("")
-    setPictureUrl("")
+    if (res.status === 204) {
+      history.push(`/detail/${id}`);
+    }
   }
 
+  useEffect(() => {
+    const loadPictures = async () => {
+      const res = await fetch(`https://api4all.azurewebsites.net/api/pictures/`);
+      const urls = await res.json();
+      setPictureUrls(urls);
+    }
+    loadPictures();
+  }, []);
+
+  useEffect(() => {
+    const loadToon = async () => {
+      const res = await fetch(`https://api4all.azurewebsites.net/api/people/${id}`);
+      const toon = await res.json();
+
+      setFirstName(toon.firstName);
+      setGender(toon.gender);
+      setLastName(toon.lastName);
+      setOccupation(toon.occupation);
+      setPictureUrl(toon.pictureUrl);
+    };
+    loadToon();
+  }, [id])
+
+  if (pictureUrls.length === 0 || !(pictureUrl)) {
+    return <React.Fragment>Loading...</React.Fragment>
+  }
   return (<React.Fragment>
     <div className="panel panel-default">
         <h3>Add toon character</h3>
@@ -53,14 +84,19 @@ const AddToonForm = () => {
         </div>
         <div className="form-group">
           <label>Picture URL:</label>
-          <input className="form-control" type="text" placeholder="Picture URL"
-            value={pictureUrl} onChange={(event) => setPictureUrl(event.target.value)} />
+          <select value={pictureUrl} onChange={(event) => setPictureUrl(event.target.value)}>
+            {
+              pictureUrls.map((pictureUrl) => 
+                <option value={pictureUrl.url}>{pictureUrl.name}</option>
+              )
+            }
+          </select>
         </div>
 
-        <button onClick={() => addToon()} className="btn btn-success" >Add</button>
+        <button onClick={() => updateToon()} className="btn btn-success" >Update</button>
     </div>
   </React.Fragment>
   )
-}
+};
 
-export default AddToonForm;
+export default UpdateToonForm;

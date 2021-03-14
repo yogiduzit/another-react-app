@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
-import AddToonForm from '../components/AddToonForm';
 import ToonList from '../components/ToonList';
 import VotesSection from '../components/VotesSection';
 
 import NotFoundPage from './NotFoundPage';
 
-const ToonDetailPage = ({ match }) => {
+const ToonDetailPage = ({ history, match }) => {
   const id = match.params.id;
 
   const [toonInfo, setToonInfo] = useState({
@@ -24,6 +24,15 @@ const ToonDetailPage = ({ match }) => {
     }
     fetchData();
   }, [id]);
+
+  const onDelete = async () => {
+    const res = await fetch(`https://api4all.azurewebsites.net/api/people/${id}`, {
+      method: "delete"
+    });
+    if (res.status === 200) {
+      history.push("/list");
+    }
+  }
 
   if (!toonInfo) return <NotFoundPage />
 
@@ -43,6 +52,8 @@ const ToonDetailPage = ({ match }) => {
             <td style={{ "width": "65%", "verticalAlign": "top" }}>
               <p><b>Occupation: </b>{toonInfo.occupation}</p>
               <p><b>Gender: </b>{toonInfo.gender}</p>
+              <button type="button" class="btn btn-secondary"><Link to={`/update/${id}`} className="text-white">Update</Link></button>
+              <button type="button" class="btn btn-danger" onClick={onDelete}>Delete</button>
             </td>
             <td style={{ "width": "20%", "verticalAlign": "top" }}>
               <h3>Others:</h3>
@@ -51,7 +62,6 @@ const ToonDetailPage = ({ match }) => {
           </tr>
         </tbody>
       </table>
-      <AddToonForm />
     </React.Fragment>
 
   );

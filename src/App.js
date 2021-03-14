@@ -16,6 +16,7 @@ import HomePage from './pages/HomePage';
 import NotFoundPage from './pages/NotFoundPage';
 import ToonDetailsPage from './pages/ToonDetailsPage';
 import ToonListPage from './pages/ToonListPage';
+import UpdateToonPage from './pages/UpdateToonPage';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/about" component={AboutPage} exact />
           <Route path="/list" component={ToonListPage} exact />
           <Route path="/detail/:id" component={ToonDetailsPage} exact />
+          <Route path="/update/:id" component={UpdateToonPage} exact />
           <Route component={NotFoundPage} />
         </Switch>
       </div>
