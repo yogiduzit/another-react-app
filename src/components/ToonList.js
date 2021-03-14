@@ -1,13 +1,23 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import toons from '../data/toons';
 
 const ToonList = (param) => {
-  var others = toons;
-  if (param !== undefined) {
-    others = toons.filter(p => p.id !== param.exceptId);
-  }
+  const [toonInfo, setToonInfo] = useState({});
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetch(`https://api4all.azurewebsites.net/api/people/`);
+      const body = await result.json();
+      setToonInfo(body);
+    }
+    fetchData();
+  }, []);
+
+  var others = toonInfo;
+
+  if (param !== undefined) {
+    others = Object.values(toonInfo).filter(p => p.id !== +param.exceptId);
+  }
 
   return (
     <>

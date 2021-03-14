@@ -1,6 +1,4 @@
-import React from 'react';
-
-import toons from '../data/toons';
+import React, { useState, useEffect } from 'react';
 
 import ToonList from '../components/ToonList';
 import NotFoundPage from './NotFoundPage';
@@ -8,36 +6,49 @@ import NotFoundPage from './NotFoundPage';
 const ToonDetailPage = ({ match }) => {
   const id = match.params.id;
 
-  const person = toons.find(
-    data => data.id === Number(id)
-  );
-  if (!person) return <NotFoundPage />
+  const [toonInfo, setToonInfo] = useState({
+    votes: 0,
+    id: 0,
+    firstName: '',
+    lastName: ''
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await fetch(`https://api4all.azurewebsites.net/api/people/${id}`);
+      const body = await result.json();
+      setToonInfo(body);
+    }
+    fetchData();
+  }, [id]);
+
+  if (!toonInfo) return <NotFoundPage />
 
   return (
     <React.Fragment>
-      <h4 className="text-info">{person.id}. {person.firstName} {person.lastName}</h4>
+      <h4 className="text-info">{toonInfo.id}. {toonInfo.firstName} {toonInfo.lastName}</h4>
+      <p>This cartoon character has received {toonInfo.votes} votes.</p>
       <table style={{ "width": "90%", "margin": "auto" }}>
         <tbody>
           <tr>
             <td style={{ "width": "15%", "verticalAlign": "top" }}>
               <img className="rounded img-responsive pull-right img-thumbnail float-left"
                 style={{ "width": "50%" }}
-                src={`${person.pictureUrl}`} alt={`${person.firstName} ${person.lastName}`} />
+                src={`${toonInfo.pictureUrl}`} alt={`${toonInfo.firstName} ${toonInfo.lastName}`} />
             </td>
             <td style={{ "width": "65%", "verticalAlign": "top" }}>
-              <p><b>Occupation: </b>{person.occupation}</p>
-              <p><b>Gender: </b>{person.gender}</p>
+              <p><b>Occupation: </b>{toonInfo.occupation}</p>
+              <p><b>Gender: </b>{toonInfo.gender}</p>
             </td>
             <td style={{ "width": "20%", "verticalAlign": "top" }}>
               <h3>Others:</h3>
-              <ToonList exceptId={person.id} />
+              <ToonList exceptId={toonInfo.id} />
             </td>
-
           </tr>
         </tbody>
       </table>
-
     </React.Fragment>
+
   );
 }
 export default ToonDetailPage
