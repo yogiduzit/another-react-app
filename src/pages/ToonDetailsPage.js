@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 
+import AddToonForm from '../components/AddToonForm';
 import ToonList from '../components/ToonList';
+import VotesSection from '../components/VotesSection';
+
 import NotFoundPage from './NotFoundPage';
 
 const ToonDetailPage = ({ match }) => {
@@ -28,6 +31,7 @@ const ToonDetailPage = ({ match }) => {
     <React.Fragment>
       <h4 className="text-info">{toonInfo.id}. {toonInfo.firstName} {toonInfo.lastName}</h4>
       <p>This cartoon character has received {toonInfo.votes} votes.</p>
+      <VotesSection id={id} votes={toonInfo.votes} setToonInfo={setToonInfo} /><hr/>
       <table style={{ "width": "90%", "margin": "auto" }}>
         <tbody>
           <tr>
@@ -47,6 +51,7 @@ const ToonDetailPage = ({ match }) => {
           </tr>
         </tbody>
       </table>
+      <AddToonForm />
     </React.Fragment>
 
   );
