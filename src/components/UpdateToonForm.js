@@ -87,7 +87,7 @@ const UpdateToonForm = () => {
           <select value={pictureUrl} onChange={(event) => setPictureUrl(event.target.value)}>
             {
               pictureUrls.map((pictureUrl) => 
-                <option value={pictureUrl.url}>{pictureUrl.name}</option>
+                <option key={pictureUrl.name} value={pictureUrl.url}>{pictureUrl.name}</option>
               )
             }
           </select>

@@ -52,8 +52,8 @@ const ToonDetailPage = ({ history, match }) => {
             <td style={{ "width": "65%", "verticalAlign": "top" }}>
               <p><b>Occupation: </b>{toonInfo.occupation}</p>
               <p><b>Gender: </b>{toonInfo.gender}</p>
-              <button type="button" class="btn btn-secondary"><Link to={`/update/${id}`} className="text-white">Update</Link></button>
-              <button type="button" class="btn btn-danger" onClick={onDelete}>Delete</button>
+              <button type="button" className="btn btn-secondary"><Link to={`/update/${id}`} className="text-white">Update</Link></button>
+              <button type="button" className="btn btn-danger" onClick={onDelete}>Delete</button>
             </td>
             <td style={{ "width": "20%", "verticalAlign": "top" }}>
               <h3>Others:</h3>
